@@ -1,0 +1,40 @@
+- name: Harden SSH config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    create: yes
+  with_items:
+    - { regexp: '^#?PermitRootLogin',        line: 'PermitRootLogin no' }
+    - { regexp: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
+    - { regexp: '^#?PermitEmptyPasswords',   line: 'PermitEmptyPasswords no' }
+    - { regexp: '^#?ChallengeResponseAuthentication', line: 'ChallengeResponseAuthentication no' }
+
+- name: Restart sshd to apply new config
+  systemd:
+    name: sshd
+    state: restarted
+
+- name: Enable firewalld
+  systemd:
+    name: firewalld
+    enabled: true
+    state: started
+
+- name: Allow SSH through the firewall
+  firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Allow Cockpit through the firewall
+  firewalld:
+    service: cockpit
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Reload firewalld to apply changes
+  command: firewall-cmd --reload

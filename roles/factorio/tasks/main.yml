@@ -1,0 +1,18 @@
+- name: Create config directory for Factorio
+  file:
+    path: "{{ ansible_env.HOME }}/podman/factorio"
+    state: directory
+    mode: '0755'
+
+- name: Run Factorio server container
+  containers.podman.podman_container:
+    name: factorio
+    image: docker.io/factoriotools/factorio
+    state: started
+    restart_policy: always
+    network: container:gluetun
+    env:
+      - SAVE_NAME=pyharderServer
+    volumes:
+      - "{{ ansible_env.HOME }}/podman/factorio:/factorio"
+

@@ -1,0 +1,9 @@
+- name: Bootstrap Arch Server
+  hosts: localhost
+  become: true
+
+  roles:
+    - { role: common, tags: common }
+    - { role: users, tags: users }
+    - { role: security, tags: security }
+    - { role: gluetun, tags: gluetun }

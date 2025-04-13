@@ -1,0 +1,26 @@
+- name: Create config directory for GlueTun
+  file:
+    path: "{{ ansible_env.HOME }}/podman/gluetun"
+    state: directory
+    mode: '0755'
+
+- name: Copy Vaulted GlueTun env file
+  copy:
+    src: "{{ playbook_dir }}/vault/gluetun.env"
+    dest: "{{ ansible_env.HOME }}/podman/gluetun/gluetun.env"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: '0600'
+
+- name: Run GlueTun container (rootless with host network)
+  containers.podman.podman_container:
+    name: gluetun
+    image: docker.io/qmcgaw/gluetun
+    state: started
+    recreate: true
+    force_restart: true
+    restart_policy: always
+    env_file: "{{ ansible_env.HOME }}/podman/gluetun/gluetun.env"
+    network: pasta
+    volumes:
+      - "{{ ansible_env.HOME }}/podman/gluetun:/gluetun"

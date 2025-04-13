@@ -1,0 +1,23 @@
+base_packages:
+  - podman
+  - git
+  - rsync
+  - tmux
+  - vim
+  - openssh
+  - cockpit
+  - cockpit-podman
+  - cockpit-storaged
+  - efibootmgr
+  - firewalld
+  - inetutils
+  - traceroute
+  - python-pip
+  - man-db
+  - man-pages
+  - fastfetch
+  - tree
+
+hostname: archserver
+
+timezone: UTC
